@@ -29,20 +29,20 @@ pars = [funcInputs.a, funcInputs.b, funcInputs.c, funcInputs.d, 0, ];
 xo_ = [vo, uo];
 
 if isempty(funcInputs.injectionTime)
-    tend = funcInputs.tspan(2); % if no current injection was given, run until the end of the tspan
+    tend = funcInputs.tspan; % if no current injection was given, run until the end of the tspan
 else
     tend = funcInputs.injectionTime(1); % run without current until first injection was given
 end
-tspan = funcInputs.tspan(1):funcInputs.delta:tend;
+tspan = 0:funcInputs.delta:tend;
 options = odeset('RelTol', 1e-10);
-options = odeset(options, 'Event', @(t, y) events(t, y));
+options = odeset(options, 'Events', @(t, y) events(t, y));
 
 % output vectors
 tout = funcInputs.tspan(1);
 xout = xo_; teout = []; event_type = {}; next = 1;
 
 while(1) % run simulation
-    [t_, x_, te_, ~, ~] = ode45(@(t, x) Izhikevich_ODE(t, x, pars), tspan, xo_, options);
+    [t_, x_, te_, xe_, ie_] = ode45(@(t, x) Izhikevich_ODE(t, x, pars), tspan, xo_, options);
     xo_ = x_(end,:); % the last value of simulation
     tout = [tout; t_(2:end-1)]; % tarray of simulation
     xout = [xout; x_(2:end-1, :)]; % v(t), u(t) array
@@ -51,18 +51,24 @@ while(1) % run simulation
     if(te_) % if spike occured
         xo_ = [funcInputs.c, xo_(2)+funcInputs.d, ];
         event_type{end+1} = 'spike';
-    else
-        if t_(end) < funcInputs.tspan(2) % if the simulation ended before end of timespan
+    else       
+        if t_(end) < funcInputs.tspan % if the simulation ended before end of timespan
             % new injection
-            I = funcInputs.I(next);
+            event_type{end+1} = 'current injection';
+            if next <= numel(funcInputs.I) % if current injection changes further more
+                I = funcInputs.I(next);
+                if next + 1 <= numel(funcInputs.I)
+                    tend = funcInputs.injectionTime(next+1);
+                else
+                    tend = funcInputs.tspan;
+                end
+            else
+                tend = funcInputs.tspan;
+            end
+            
             pars = [funcInputs.a, funcInputs.b, funcInputs.c, funcInputs.d, I, ];
             next = next+1;
-            event_type{end+1} = 'current injection';
-            if next < numel(funcInputs.I) % if current injection changes further more
-                tend = funcInputs.injectionTime(next);
-            else
-                tend = funcInputs.tspan(2);
-            end
+            
         else % end of simulation
             break
         end
@@ -70,34 +76,53 @@ while(1) % run simulation
     
     % resume simulation
     options = odeset(options, 'InitialStep', t_(end)-t_(end-1), 'MaxStep', t_(end)-t_(1));
-    tspan = [t_(end), tout(end)+dt:dt:tend];
+    tspan = [t_(end), tout(end)+funcInputs.delta*1.5:funcInputs.delta:tend];
+    
+    if length(tspan) == 1
+        break
+    end
 end
     
 end
 
 function rhs = Izhikevich_ODE(t, state, pars)
-rhs(1) = 0.04.*state(1).^2 + 5.*state(1) + 140 - state(2) + pars(5);
-rhs(2) = pars(1).*(pars(2).*state(1) - state(2));
+    rhs = zeros(length(state),1);
+
+    v = state(1);
+    u = state(2);
+    %fprintf('v = %.5f, u = %.5f\n', v, u);
+
+    a = pars(1);
+    b = pars(2);
+    c = pars(3);
+    d = pars(4);
+    I = pars(5);
+
+    phi = 0.04 .* v .^ 2 + 5 .* v + 140;
+
+    rhs(1) = phi - u + I;
+    rhs(2) = a .* (b .* v - u);
 end
 
 function [value,isterminal,direction] = events(t, state) % ODE event location 
-    value = [1,];
-    isterminal = [1,];
-    direction = [1,];
+    isterminal = 1;
+    direction = 1;
    
     v = state(1);
     u = state(2);
 
+    %fprintf('v = %.5f, u = %.5f\n', v, u);
     % event of ODE = spike
-    value(1) = (v > 30) - 1; % when spike
+    value = (v > 30)-1; % when spike
 
 end
 
 function funcInputs = parseMyInputs(varargin)
 funcInputs = inputParser;
 
-addRequired(funcInputs, 'tspan', [0 1000], @isvector);
-addRequired(funcInputs, 'delta', .01, @isscalar);
+addRequired(funcInputs, 'dummy', @checkDummy);
+addParameter(funcInputs, 'tspan', 1000, @isscalar);
+addParameter(funcInputs, 'delta', .01, @isscalar);
 addParameter(funcInputs, 'a', .1, @isscalar);
 addParameter(funcInputs, 'b', .2, @isscalar);
 addParameter(funcInputs, 'c', -65.0, @isscalar);
@@ -105,6 +130,11 @@ addParameter(funcInputs, 'd', 2.0, @isscalar);
 addParameter(funcInputs, 'I', [], @isvector);
 addParameter(funcInputs, 'injectionTime', [], @isvector);
 
-parse(funcInputs, varargin{:});
+dummy.dummy = 10;
+parse(funcInputs, dummy, varargin{:});
 funcInputs = funcInputs.Results;
+end
+
+function checkDummyOk = checkDummy(dummy)
+checkDummyOk = true;
 end

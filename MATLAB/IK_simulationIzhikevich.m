@@ -1,5 +1,5 @@
 clc; clear; % clear cmd window and cache
-addpath('../func') % add path of funtions
+addpath('./func') % add path of funtions
 
 %% ==================================
 % Analyze the fixed point for given parameter sets
@@ -40,8 +40,8 @@ for i = 1:numel(I)
     waitbar(i/numel(I));
     
     pars = [a, b, c, d, I(i)]; % parameters for current simulation
-    paramset = {'tspan', tspan, 'delta', .01, 'a', a, 'b', b, 'c', c, ...
-        'd', d, 'I', I(i), 'injectionTime', [0]};
+    paramset = {'tspan', 1000, 'delta', .01, 'a', .1, 'b', .2, 'c', -65, ...
+        'd', 2, 'I', I(i), 'injectionTime', [1]};
     
     trajectory(i).pars = pars; % store parameters for current simulation to trajectory structure
     % initialize trajectory object for given iteration
@@ -66,7 +66,7 @@ for i = 1:numel(I)
         v = rts(idx); u = b*v; % fxpt coordinate
         
         % fxpt types
-        A = Izhikevich_Jacobian(v, u); % Jacobian of Izhikevich model
+        A = Izhikevich_Jacobian(v, u, pars); % Jacobian of Izhikevich model
         [bf_type, eigenvector, eigenvalue, delta, tau] = type_(A);
         
         % retrieve trajectory information
@@ -74,11 +74,11 @@ for i = 1:numel(I)
         trajectory(i).evalue{idx} = eigenvalue; % eigenvalue
         
         % check if the current data type is in fxpt array
-        [TF, i] = in_structure(fxpt, idx, bf_type);
+        [TF, j] = in_structure(fxpt, idx, bf_type);
         
         if TF % if inside array, add x*/I values to fxpt
-            fxpt(i).v_star(end+1) = v; fxpt(i).pars{end+1} = pars;
-            fxpt(i).delta(end+1) = delta; fxpt(i).tau(end+1) = tau;            
+            fxpt(j).v_star(end+1) = v; fxpt(j).pars{end+1} = pars;
+            fxpt(j).delta(end+1) = delta; fxpt(j).tau(end+1) = tau;            
         else % if not exist, add to fxpt array
             fxpt(end+1).type = idx; fxpt(end).bf_type = bf_type;
             fxpt(end).v_star = v; fxpt(end).pars = {pars};
@@ -86,7 +86,7 @@ for i = 1:numel(I)
         end
         
         % get trajectory near fixed point
-        [tout, xout, ~, ~] = Izhikevich(v, u+.1, paramset);
+        [tout, xout, ~, ~] = Izhikevich(v, u+.1, paramset{:});
         if idx == 1
             trajectory(i).v1 = xout(:,1);
             trajectory(i).u1 = xout(:,2);

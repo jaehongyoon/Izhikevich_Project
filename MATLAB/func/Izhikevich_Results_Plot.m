@@ -60,7 +60,7 @@ for i = 1:length(fxpt)
         color_spec = 'r';
     end    
            
-    eval(sprintf('%s %s', strcat(num2str(fxpt(i).type), '_line'),...
+    eval(sprintf('line_%s', strcat(num2str(fxpt(i).type)),...
         '= plot(fxpt(i).delta, fxpt(i).tau, [color_spec, line_type]);'));    
 end
 xlabel('delta');ylabel('tau')
@@ -71,7 +71,7 @@ hold off
 % ===========================================
 
 dv = 0.01; du = 0.01;
-v1 = -90; v2 = 40; u1 = -20; u2 = 15;
+v1 = -100; v2 = 100; u1 = -100; u2 = 100;
 v = v1:dv:v2; u = u1:du:u2;
 [V,U] = meshgrid(v1:1:v2, u1:1:u2);
 
@@ -88,39 +88,15 @@ for i = 1:length(trajectory)
     trajectory_1 = plot(trajectory(i).v1, trajectory(i).u1, 'b-');
     trajectory_2 = plot(trajectory(i).v2, trajectory(i).u2, 'r-');
     
-    vectorfield = quiver(V, U, dvdt, dudt, 0.5, 'b'); % plot vector field    
+    vectorfield = quiver(V, U, dvdt, dudt, .5, 'g'); % plot vector field    
     vnullcline = plot(v, vnull, 'k-');
     unullcline = plot(v, unull, 'k--'); % plot nullclines
-    
-    for j = 1:length(trajectory(i).fxpt_type)
-        qtf = trajectory(i).fxpt_type(j); % fxpt type
-        x_star = trajectory(i).x_star(j); % x_star 
-        y_star = HRModel_null(x_star); % y_star
         
-        % determine color code
-        if trajectory(i).fxpt_type(j) == 1
-            color_spec = 'b';
-        else
-            color_spec = 'r';
-        end
-        
-        % plot fxpt for Q/F
-        eval(['fxpt_', trajectory(i).fxpt_type(j), ...
-                '= plot(x_star, y_star, [''^'', color_spec])'])
-    end
-    
-    axis([-3 3 -25 5])
     pause(); % pause to make decision/observe the change in trajectory
-    
+    axis([-100 50 -100 100])
     % delete plots
     delete(vnullcline); delete(unullcline); delete(vectorfield);
     delete(trajectory_1); delete(trajectory_2);
-    if exist('fxpt_1')
-        delete(fxpt_1)
-    end
-    if exist('fxpt_2')
-        delete(fxpt_2)
-    end
 
 end
 hold off
