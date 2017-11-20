@@ -24,6 +24,7 @@ funcInputs = parseMyInputs(varargin{:});
 
 % parameter array
 pars = [funcInputs.a, funcInputs.b, funcInputs.c, funcInputs.d, 0, ];
+% pars = [funcInputs.a, funcInputs.b, funcInputs.c, funcInputs.d, funcInputs.I, ];% added by Z.Li 20171119
 
 % initial conditions
 xo_ = [vo, uo];

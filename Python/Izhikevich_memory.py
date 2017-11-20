@@ -24,8 +24,8 @@ start_scope()
 
 # %%    Parameters
 N_neuron = 1
-a = 0.273
-b = 0.2625
+a = 0.1
+b = 0.26
 c = -65 # for future exploration: I'd rather keep this value fixed for biological reasons
 d = 2   # for future exploration: I'd rather keep this value fixed for biological reasons
 
@@ -83,3 +83,6 @@ ax2.tick_params('y', colors='r')
 fig.tight_layout()
 plt.show()
 xlim(100,1500)
+
+figure()
+plot(state_mon.t/ms,state_mon.u[0],'b');
