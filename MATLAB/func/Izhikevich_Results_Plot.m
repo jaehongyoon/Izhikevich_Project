@@ -42,11 +42,9 @@ hold off
 % ===========================================
 fig2 = figure(200);
 hold on 
-% delta = 0:0.01:4.5;
-% plot(delta, 2*sqrt(delta), 'k-')
-% plot(delta, -2*sqrt(delta), 'k-')
-tau = -1:0.001:1;
-plot(tau.^2/4, tau, 'k-')
+delta = 0:0.01:4.5;
+plot(delta, 2*sqrt(delta), 'k-')
+plot(delta, -2*sqrt(delta), 'k-')
 for i = 1:length(fxpt)    
     bf_type = fxpt(i).bf_type;    
     if (~isempty(strfind(bf_type, 'stable'))) &&...
