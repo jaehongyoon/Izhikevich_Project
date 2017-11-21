@@ -1,0 +1,49 @@
+\begin{thebibliography}{1}
+
+\bibitem{braitenberg1986vehicles}
+V.~Braitenberg.
+\newblock {\em Vehicles: Experiments in synthetic psychology}.
+\newblock MIT press, 1986.
+
+\bibitem{french2005introducing}
+R.~L. French and L.~Canamero.
+\newblock Introducing neuromodulation to a braitenberg vehicle.
+\newblock In {\em Robotics and Automation, 2005. ICRA 2005. Proceedings of the
+  2005 IEEE International Conference on}, pages 4188--4193. IEEE, 2005.
+
+\bibitem{hindmarsh1984model}
+J.~L. Hindmarsh and R.~Rose.
+\newblock A model of neuronal bursting using three coupled first order
+  differential equations.
+\newblock {\em Proceedings of the royal society of London B: biological
+  sciences}, 221(1222):87--102, 1984.
+
+\bibitem{izhikevich2003simple}
+E.~M. Izhikevich.
+\newblock Simple model of spiking neurons.
+\newblock {\em IEEE Transactions on neural networks}, 14(6):1569--1572, 2003.
+
+\bibitem{Izhikevich:2006}
+E.~M. Izhikevich and R.~FitzHugh.
+\newblock {F}itz{H}ugh-{N}agumo model.
+\newblock {\em Scholarpedia}, 1(9):1349, 2006.
+\newblock revision \#9400.
+
+\bibitem{maass1997networks}
+W.~Maass.
+\newblock Networks of spiking neurons: the third generation of neural network
+  models.
+\newblock {\em Neural networks}, 10(9):1659--1671, 1997.
+
+\bibitem{moehlis2008dynamical}
+J.~Moehlis.
+\newblock Dynamical systems in neuroscience: The geometry of excitability and
+  bursting, 2008.
+
+\bibitem{nakahara1998near}
+H.~Nakahara and K.~Doya.
+\newblock Near-saddle-node bifurcation behavior as dynamics in working memory
+  for goal-directed behavior.
+\newblock {\em Neural Computation}, 10(1):113--132, 1998.
+
+\end{thebibliography}
