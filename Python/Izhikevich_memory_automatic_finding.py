@@ -22,15 +22,14 @@ from brian2 import *
 import matplotlib.pyplot as plt
 start_scope()
 
-#global spike_mon, Neuron_pop
 
 def score(spike_recording):
     score_list = np.arange(len(spike_recording))
     for i in range(len(spike_recording)):
         spike_t = spike_recording[i]/ms
-        n_spike_A = len([num for num in spike_t if num>100 and num<250])
-        n_spike_B = len([num for num in spike_t if num>350 and num<500])
-        n_spike_C = len([num for num in spike_t if num>600 and num<750])
+        n_spike_A = len([num for num in spike_t if num>100 and num<250])    # background
+        n_spike_B = len([num for num in spike_t if num>350 and num<500])    # on-state
+        n_spike_C = len([num for num in spike_t if num>600 and num<750])    # off-state
         score_list[i] = (n_spike_B/(n_spike_A+1))* (n_spike_B/(n_spike_C+1))
     return score_list
 
@@ -67,9 +66,16 @@ def evolve(gene_A,gene_B,gene_scores,retain=0.2, cross=0.2,random_select=0.05):
     return new_gene_A,new_gene_B,gene_scores,gene_A,gene_B
 
 def show_evolution(gene_A,gene_B,gene_scores):
+    global gene_A_record,gene_B_record, gene_score_record
     for i in range(len(gene_scores)):
         if gene_scores[i]>1.5:
             plot(gene_A[i],gene_B[i],'.',color=np.array([1,0,0])*(1-(gene_scores[i])/40.))
+            xlim([0, 0.45])
+            ylim([0.252, 0.264])
+            
+            gene_A_record = np.append(gene_A_record,gene_A[i])
+            gene_B_record = np.append(gene_B_record,gene_B[i])
+            gene_score_record = np.append(gene_score_record,gene_scores[i])
     return
 # %%    Parameters
 N_neuron = 200
@@ -125,6 +131,9 @@ Neuron_pop.b[1:] = np.random.rand(N_neuron-1)+0.01
 next_gene_A = Neuron_pop.a*1.
 next_gene_B = Neuron_pop.b*1.
 scores = np.zeros(N_neuron)
+gene_A_record = []
+gene_B_record = []
+gene_score_record = []
 while np.min(scores)==0:
     restore()
     Neuron_pop.a = next_gene_A

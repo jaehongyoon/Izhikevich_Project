@@ -21,11 +21,11 @@ Attention: there is overshooting:
 from brian2 import *
 import matplotlib.pyplot as plt
 start_scope()
-
+defaultclock.dt = 0.01*ms
 # %%    Parameters
 N_neuron = 1
-a = 0.1
-b = 0.26
+a = 0.4448
+b = 0.2584
 c = -65 # for future exploration: I'd rather keep this value fixed for biological reasons
 d = 2   # for future exploration: I'd rather keep this value fixed for biological reasons
 
@@ -50,7 +50,7 @@ Neuron_pop.d = d
 # %%    Test
 I_potentiation = 0.2    
 t0 = 100                    # steady state time
-I1 = 0.15                   # stimulus (in addition to potentiation)
+I1 = 0.2                   # stimulus (in addition to potentiation)
 t1 = 50                     # stimulus time
 I2 = -I_potentiation        # inhibition
 t2 = 50 # ms                # inhibition time 
