@@ -1,4 +1,4 @@
-function Izhikevich_Results_Plot(fxpt, trajectory)
+  function Izhikevich_Results_Plot(fxpt, trajectory)
 
 %% ==========================================
 % Bifurcation Diagram
@@ -94,11 +94,11 @@ for i = 1:length(trajectory)
     vnullcline = plot(v, vnull, 'k-');
     unullcline = plot(v, unull, 'k--'); % plot nullclines
         
-    pause(); % pause to make decision/observe the change in trajectory
-    axis([-100 50 -100 100])
-    % delete plots
-    delete(vnullcline); delete(unullcline); delete(vectorfield);
-    delete(trajectory_1); delete(trajectory_2);
+%     pause(); % pause to make decision/observe the change in trajectory
+%     axis([-100 50 -100 100])
+%     % delete plots
+%     delete(vnullcline); delete(unullcline); delete(vectorfield);
+%     delete(trajectory_1); delete(trajectory_2);
 
 end
 hold off

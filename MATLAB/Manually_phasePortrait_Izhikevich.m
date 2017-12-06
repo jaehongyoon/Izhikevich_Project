@@ -1,27 +1,27 @@
 close all;clc; clear; % clear cmd window and cache
 addpath('./func') % add path of funtions
 %%  basic settings
-a = .1; b = .26; c = -65; d = 2; RelTol = 1e-10;
+a = .2958; b = .263; c = -65; d = 2; RelTol = 1e-10;
 I0 = 0.2;   % potentiation (steady state) 
-I1 = 0.35;  % turn on
+I1 = 0.4;  % turn on
 I2 = 0;     % turn off
 pars = [a b c d I0];
 
 %   phase plane ranges
-v1=-80; v2=40;    dv=(v2-v1)/100;
-u1=-18; u2=-10;    du=(u2-u1)/100;
+v1=-80; v2=40;    dv=(v2-v1)/10;
+u1=-18; u2=-10;    du=(u2-u1)/10;
 v = v1 : dv/100 : v2;
 %%   Get trajectories
-% I_list = [0.2 0.4 0.2 0 0.2 0];
-% T_stim = 200;
-% T_list = [100 200 250+T_stim 450+T_stim 500+T_stim 1000+T_stim];
-I_list = [0.4 0.4];
+I_list = [0.2 0.4 0.2 0 0.2 0];
 T_stim = 200;
-T_list = [0.1 400];
+T_list = [100 200 250+T_stim 450+T_stim 500+T_stim 1000+T_stim];
+% I_list = [0.4 0.4];
+% T_stim = 200;
+% T_list = [0.1 400];
 % varargin = {'tspan', 1000, 'delta', .01, 'a', .1, 'b', .26, 'c', -65, ...
 %         'd', 2, 'I', I_list, 'injectionTime', T_list};
-varargin = {'tspan', 1000, 'delta', .01, 'a', .4448, 'b', .2584, 'c', -65, ...
-        'd', 2, 'I', I_list, 'injectionTime', T_list};
+varargin = {'tspan', 1000, 'delta', .01, 'a', pars(1), 'b', pars(2), 'c', pars(3), ...
+        'd', pars(4), 'I', I_list, 'injectionTime', T_list};
 [tout, xout, teout, event_type] = Izhikevich(-65, -16, varargin{:});
 figure(1);
 yyaxis left;
@@ -48,7 +48,7 @@ for i = 1: length(I_list)
     Zu = pars(1)*(pars(2)*V-U);
     
     %   normalized quiver
-    arrow_len = 0.3;
+    arrow_len = 1;
     Z_norm_v = Zv./sqrt(Zv.^2+Zu.^2);
     Z_norm_u = Zu./sqrt(Zv.^2+Zu.^2);
     quiver(V,U,Z_norm_v*arrow_len,Z_norm_u*arrow_len,'AutoScale','off');

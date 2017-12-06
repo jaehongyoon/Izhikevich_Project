@@ -1,11 +1,11 @@
 clc; clear; % clear cmd window and cache
 addpath('./func') % add path of funtions
-
+close all
 %% ==================================
 % Analyze the fixed point for given parameter sets
 % ===================================
 
-a = .1; b = .2; c = -65; d = 2; RelTol = 1e-10; % THIS PART SHOULD CHANGE 
+a = .2958; b = .263; c = -65; d = 2; RelTol = 1e-10; % THIS PART SHOULD CHANGE 
                                                 % ACCORDINGLY TO THE
                                                 % SPECIFICATION OF ANALYSIS
 
@@ -33,15 +33,16 @@ a = .1; b = .2; c = -65; d = 2; RelTol = 1e-10; % THIS PART SHOULD CHANGE
 
 fxpt = []; trajectory = [];
 h = waitbar(0, 'bifurcation calculating');
-dI = .01; I = -1.5:dI:3;
+% I = [0:0.01:0.24 0.241:0.001:0.244 0.2441:0.0001:0.245];
+I = [0.244:0.00001:0.245];
 tspan = [0 1000];
 
 for i = 1:numel(I)
     waitbar(i/numel(I));
     
     pars = [a, b, c, d, I(i)]; % parameters for current simulation
-    paramset = {'tspan', 1000, 'delta', .01, 'a', .1, 'b', .2, 'c', -65, ...
-        'd', 2, 'I', I(i), 'injectionTime', [1]};
+    paramset = {'tspan', 1000, 'delta', .01, 'a', pars(1), 'b', pars(2), 'c', pars(3), ...
+        'd', pars(4), 'I', I(i), 'injectionTime', [1]};
     
     trajectory(i).pars = pars; % store parameters for current simulation to trajectory structure
     % initialize trajectory object for given iteration
